@@ -1,7 +1,7 @@
 #pragma once
 class Car {
-	
-	public:
+
+public:
 		Car();
 		void moveLeft();
 		void moveRight();
@@ -9,7 +9,7 @@ class Car {
 		//car sizes
 		static const int sizeX = 4, sizeY = 3;
 
-    private:
+private:
 	    //center Y coordinate of the car
 	    int positionY_;
 };

@@ -1,15 +1,17 @@
-#pragma once
+#ifndef CAR_H
+#define CAR_H
+
 class Car {
 
 public:
 		Car();
 		void moveLeft();
 		void moveRight();
-		int getPositionY();
-		//car sizes
+		int getPositionLeftY() const;
 		static const int sizeX = 4, sizeY = 3;
 
 private:
-	    //center Y coordinate of the car
-	    int positionY_;
+	    int positionLeftY_;
 };
+
+#endif CAR_H

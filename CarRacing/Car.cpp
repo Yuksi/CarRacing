@@ -5,17 +5,17 @@ static const int sizeX = 4, sizeY = 3;
 
 Car::Car()
 {
-	Car::positionY_ = (sizeY * 2) + 2;
+	Car::positionLeftY_ = (sizeY * 2) + 1;
 }
 		
 void Car::moveLeft() {
-	Car::positionY_ -= 3;
+	Car::positionLeftY_ -= sizeY;
 }
 
 void Car::moveRight() {
-	Car::positionY_ += 3;
+	Car::positionLeftY_ += sizeY;
 }
 
-int Car::getPositionY() {
-	return positionY_;
+int Car::getPositionLeftY() const {
+	return positionLeftY_;
 }

@@ -20,9 +20,6 @@ Block::Block(int positionXBottom, int positionY) {
 	Block::positionXBottom_ = positionXBottom;
 	Block::positionLeftY_ = positionY;
 }
-void Block::moveDownOnScreen() {
-	Block::positionXBottom_++;
-}
 int Block::getPositionXBottom() const {
 	return Block::positionXBottom_;
 }

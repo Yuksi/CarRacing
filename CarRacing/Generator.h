@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
@@ -16,4 +17,18 @@ private:
 	void operator=(const Generator&) = delete;
 };
 
+=======
+#ifndef GENERATOR_H
+#define GENERATOR_H
+
+#include "Block.h"
+
+class Generator
+{
+public:
+	Generator();
+	Block generateBlock();
+};
+
+>>>>>>> Revert "levels & traffic & fixes & pause"
 #endif GENERATOR_H

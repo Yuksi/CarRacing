@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef CAR_H
 #define CAR_H
 
@@ -27,4 +28,22 @@ private:
 	int speed_;
 };
 
+=======
+#ifndef CAR_H
+#define CAR_H
+
+class Car {
+
+public:
+		Car();
+		void moveLeft();
+		void moveRight();
+		int getPositionLeftY() const;
+		static const int sizeX = 4, sizeY = 3;
+
+private:
+	    int positionLeftY_;
+};
+
+>>>>>>> Revert "levels & traffic & fixes & pause"
 #endif CAR_H

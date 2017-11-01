@@ -1,30 +1,28 @@
 #ifndef CAR_H
 #define CAR_H
 
+#include "Active.h"
 #include "Constants.h"
 
-class Car {
+class Car : public Active {
 
 public:
 	Car();
-	inline void Car::moveLeft() {
-		Car::positionLeftY_ -= CarRacingNamespace::Constants::carSizeY;
-	}
-
-	inline void Car::moveRight() {
-		Car::positionLeftY_ += CarRacingNamespace::Constants::carSizeY;
-	}
-	inline void Car::setSpeed(int speed) {
-		Car::speed_ = speed;
-	}
-	int getPositionLeftY() const;
-	int getPositionBottomX() const;
-	int getSpeed() const;
+	inline void moveLeft();
+	inline void moveRight();
+	void print();
 
 private:
-	int positionLeftY_;
-	int positionBottomX_;
-	int speed_;
+	int oldPositionLeftY_;
 };
+
+inline void Car::moveLeft() {
+	oldPositionLeftY_ = positionLeftY_;
+	positionLeftY_ -= CarRacingNamespace::Constants::carSizeY;
+}
+inline void Car::moveRight() {
+	oldPositionLeftY_ = positionLeftY_;
+	positionLeftY_ += CarRacingNamespace::Constants::carSizeY;
+}
 
 #endif CAR_H

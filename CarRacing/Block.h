@@ -1,19 +1,18 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-class Block {
+#include "Active.h"
+
+class Block : public Active {
 
 public:
-	Block(int positionXBottom, int positionY);
-	inline void moveDownOnScreen() {
-		Block::positionXBottom_++;
-	}
-	int getPositionXBottom() const;
-	int getPositionLeftY() const;
-
-private:
-	int positionLeftY_;
-	int positionXBottom_;
+	Block(int positionBottomX, int positionLeftY);
+	inline void moveDownOnScreen();
+	void print();
 };
+
+inline void Block::moveDownOnScreen() {
+	positionBottomX_++;
+}
 
 #endif BLOCK_H

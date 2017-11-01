@@ -11,9 +11,6 @@ public:
 	Generator();
 	Block generateBlock();
 	Traffic generateTraffic();
-private:
-	Generator(const Generator&) = delete;
-	void operator=(const Generator&) = delete;
 };
 
 #endif GENERATOR_H

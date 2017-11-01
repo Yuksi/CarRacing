@@ -1,22 +1,28 @@
-#pragma once
+#ifndef TRAFFIC_H
+#define TRAFFIC_H
+
 #include "Car.h"
-class Traffic : public Car
+class Traffic : public Active
 {
 public:
-	Traffic(int positionXBottom, int positionY);
-	inline void Traffic::moveDown() {
-		Traffic::positionBottomX_++;
-	}
-	inline void Traffic::setSpeed(int speed) {
-		Traffic::speed_ = speed;
-	}
-	int getPositionLeftY() const;
-	int getPositionBottomX() const;
-	int getSpeed() const;
+	Traffic(int positionBottomX, int positionY);
+	inline void moveDown();
+	inline void setSpeed(int speed);
+	inline int getSpeed() const;
+	void print();
 
 private:
-	int positionLeftY_;
-	int positionBottomX_;
 	int speed_;
 };
 
+inline void Traffic::moveDown() {
+	positionBottomX_++;
+}
+inline void Traffic::setSpeed(int speed) {
+	speed_ = speed;
+}
+inline int Traffic::getSpeed() const {
+	return speed_;
+}
+
+#endif TRAFFIC_H

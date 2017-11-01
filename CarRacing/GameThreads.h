@@ -5,6 +5,7 @@
 #include "Printer.h"
 #include "Generator.h"
 #include "Constants.h"
+#include "Screen.h"
 
 class GameThreads
 {
@@ -17,8 +18,6 @@ public:
 
 private:
 	void increaseLevel();
-
-	
 };
 
 #endif GAME_THREADS_H

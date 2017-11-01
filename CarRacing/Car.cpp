@@ -1,21 +1,27 @@
 #include "stdafx.h"
 #include "Car.h"
 #include "Constants.h"
+#include <iostream>
+using namespace CarRacingNamespace;
 
 Car::Car()
 {
-	Car::positionLeftY_ = (CarRacingNamespace::Constants::carSizeY * 2) + 1;
-	Car::positionBottomX_ = CarRacingNamespace::Constants::nRows - 1;
+	positionLeftY_ = (CarRacingNamespace::Constants::carSizeY * 2) + 1;
+	positionBottomX_ = CarRacingNamespace::Constants::nRows - 1;
 }
 
-int Car::getPositionLeftY() const {
-	return positionLeftY_;
-}
+void Car::print() {
+	for (int i = 0; i < Constants::carSizeX; i++) {
+		if (oldPositionLeftY_ > 0) {
+			for (int k = 0; k < Constants::carSizeY; k++) {
+				putConsoleCursorToXY(oldPositionLeftY_ + k, getPositionBottomX() - i);
+				std::cout << Constants::spaceSymbol;
+			}
+		}
 
-int Car::getPositionBottomX() const {
-	return positionBottomX_;
-}
-
-int Car::getSpeed() const {
-	return speed_;
+		for (int k = 0; k < Constants::carSizeY; k++) {
+			putConsoleCursorToXY(getPositionLeftY() + k, getPositionBottomX() - i);
+			std::cout << Constants::carSymbol;
+		}
+	}
 }

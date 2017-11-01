@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include "Generator.h"
 #include "Printer.h"
+#include "Screen.h"
 
 using namespace CarRacingNamespace;
 
@@ -21,34 +22,35 @@ int level_ = 0;
 Car car_;
 
 Generator generator_;
-Printer printer_;
+Screen screen_;
 
 GameThreads::GameThreads() {
-	printer_.printScreen(car_);
+	screen_.printScreen();
 }
 
 void GameThreads::increaseLevel() {
 	if (distance_ % Constants::distanceToLevelUp == 0) {
 		level_++;
 		speed_++;
-		printer_.rePrintSpeed(speed_);
-		printer_.rePrintLevel(level_);
+		screen_.rePrintSpeed(speed_);
+		screen_.rePrintLevel(level_);
 	}
 }
 
 void GameThreads::blockDisplayThread() {
 	Block block = generator_.generateBlock();
 	while ((block.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || block.getPositionLeftY() + Constants::blockSize <= car_.getPositionLeftY())
-		|| block.getPositionXBottom() < Constants::nRows - Constants::carSizeX) {
+		|| block.getPositionBottomX() < Constants::nRows - Constants::carSizeX) {
 
-		if (block.getPositionXBottom() == Constants::nRows + Constants::blockSize) {
+		if (block.getPositionBottomX() == Constants::nRows + Constants::blockSize) {
 			block = generator_.generateBlock();
 		}
-		printer_.printBlock(block);
+		Printer printer(&block);
+		printer.print();
 		std::this_thread::sleep_for(std::chrono::milliseconds(Constants::maximumTimePause / speed_));
 		block.moveDownOnScreen();
 		distance_++;
-		printer_.rePrintDistance(distance_);
+		screen_.rePrintDistance(distance_);
 		increaseLevel();
 		if (isPaused_) {
 			int k = 1;
@@ -59,7 +61,7 @@ void GameThreads::blockDisplayThread() {
 		}
 	}
 
-	printer_.printGameOver();
+	screen_.printGameOver();
 	isGameOver = true;
 }
 
@@ -71,7 +73,8 @@ void GameThreads::displayTrafficThread() {
 		if (traffic.getPositionBottomX() == Constants::nRows + Constants::carSizeX) {
 			traffic = generator_.generateTraffic(); 
 		}
-		printer_.printTraffic(traffic);
+		Printer printer(&traffic);
+		printer.print();
 		if (traffic.getSpeed() < 0) {
 			std::this_thread::sleep_for(std::chrono::milliseconds((Constants::maximumTimePause * 2) / speed_));
 		}
@@ -86,20 +89,21 @@ void GameThreads::displayTrafficThread() {
 		}
 	}
 
-	printer_.printGameOver();
+	screen_.printGameOver();
 	isGameOver = true;
 }
 
 void GameThreads::startGameThread() {
-	printer_.printScreen(car_);
-
 	HANDLE stdInputHandle = GetStdHandle(STD_INPUT_HANDLE);
 	DWORD dr;
 	INPUT_RECORD  inputRecord;
+
+	Printer printer(&car_);
 	
 	while (true) {
 		ReadConsoleInput(stdInputHandle, &inputRecord, sizeof(INPUT_RECORD), &dr);
 		FlushConsoleInputBuffer(stdInputHandle);
+		printer.print();
 		
 		if (inputRecord.EventType == KEY_EVENT) {
 			if (inputRecord.Event.KeyEvent.bKeyDown) {
@@ -108,26 +112,26 @@ void GameThreads::startGameThread() {
 					if (car_.getPositionLeftY() >= Constants::carSizeY + 1) {
 						int oldCarPositionY = car_.getPositionLeftY();
 						car_.moveLeft();
-						printer_.rePrintCar(oldCarPositionY, car_);
+						printer.print();
 					}
 					break;
 				case VK_RIGHT:
 					if (car_.getPositionLeftY() < Constants::nColumns - Constants::carSizeY - 1) {
 						int oldCarPositionLeftY = car_.getPositionLeftY();
 						car_.moveRight();
-						printer_.rePrintCar(oldCarPositionLeftY, car_);
+						printer.print();
 					}
 					break;
 				case VK_UP:
 					if (speed_ < Constants::speedMax + level_) {
 						speed_++;
-						printer_.rePrintSpeed(speed_);
+						screen_.rePrintSpeed(speed_);
 					}
 					break;
 				case VK_DOWN:
 					if (speed_ > Constants::speedMin + level_) {
 						speed_--;
-						printer_.rePrintSpeed(speed_);
+						screen_.rePrintSpeed(speed_);
 					}
 					break;
 				case VK_RETURN:

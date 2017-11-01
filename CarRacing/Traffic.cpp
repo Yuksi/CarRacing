@@ -1,21 +1,29 @@
 #include "stdafx.h"
 #include "Traffic.h"
-
+#include "Constants.h"
+#include <iostream>
+using namespace CarRacingNamespace;
 
 Traffic::Traffic(int positionXBottom, int positionY) {
-	Traffic::positionBottomX_ = positionXBottom;
-	Traffic::positionLeftY_ = positionY;
+	positionBottomX_ = positionXBottom;
+	positionLeftY_ = positionY;
 }
 
-int Traffic::getPositionLeftY() const {
-	return positionLeftY_;
-}
-
-int Traffic::getPositionBottomX() const {
-	return positionBottomX_;
-}
-
-int Traffic::getSpeed() const {
-	return speed_;
+void Traffic::print() {
+	for (int i = 0; i < Constants::carSizeX; i++) {
+		int trafficLine = getPositionBottomX() - i;
+		if (trafficLine >= 0 && trafficLine < Constants::nRows) {
+			putConsoleCursorToXY(getPositionLeftY(), trafficLine);
+			for (int k = 0; k < Constants::carSizeY; k++) {
+				std::cout << Constants::trafficSymbol;
+			}
+		}
+		if (trafficLine - Constants::carSizeX >= 0 && trafficLine - Constants::carSizeX < Constants::nRows) {
+			putConsoleCursorToXY(getPositionLeftY(), trafficLine - Constants::carSizeX);
+			for (int k = 0; k < Constants::carSizeY; k++) {
+				std::cout << Constants::spaceSymbol;
+			}
+		}
+	}
 }
 

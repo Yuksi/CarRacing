@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
@@ -15,13 +14,23 @@ namespace CarRacingNamespace {
 		static const int speedMin = 1;
 		static const int speedTraffic = 3;
 
-	static const int nRows = 20;
-	static const int nColumns = 17;
+		static const int nRows = 20;
+		static const int nColumns = 20;
 
-	static const char boardSymbol = 222;
-	static const char blockSymbol = 'X';
-	static const char carSymbol = 178;
-	static const char spaceSymbol = ' ';
-};
+		static const char boardSymbol = 222;
+		static const char blockSymbol = 'X';
+		static const char carSymbol = 178;
+		static const char spaceSymbol = ' ';
+		static const char trafficSymbol = '0';
+
+		static const int blockSize = 3;
+
+		static const int carSizeX = 4;
+		static const int carSizeY = 3;
+
+		static const int distanceToLevelUp = 100;
+		static const int maximumTimePause = 200;
+	};
+}
 
 #endif CONSTANTS_H

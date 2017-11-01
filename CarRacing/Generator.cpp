@@ -11,7 +11,22 @@ Generator::Generator()
 }
 
 Block Generator::generateBlock() {
-	int blockLeftPoint = 1 + rand() % (Constants::nColumns - 1 - Block::size);
+	int blockLeftPoint = 1 + rand() % 
+		(CarRacingNamespace::Constants::nColumns - 1 - CarRacingNamespace::Constants::blockSize - 1);
 	Block block = Block(0, blockLeftPoint);
 	return block;
 }
+
+Traffic Generator::generateTraffic() {
+	int carLeftPoint = 1 + rand() %
+		(CarRacingNamespace::Constants::nColumns - 1 - CarRacingNamespace::Constants::carSizeY - 1);
+	Traffic traffic = Traffic(0, carLeftPoint);
+	if (traffic.getPositionLeftY() - CarRacingNamespace::Constants::carSizeY < CarRacingNamespace::Constants::nColumns / 2) {
+		traffic.setSpeed(CarRacingNamespace::Constants::speedTraffic);
+	}
+	else {
+		traffic.setSpeed(CarRacingNamespace::Constants::speedTraffic);
+	}
+	return traffic;
+}
+

@@ -5,10 +5,11 @@ class Block {
 
 public:
 	Block(int positionXBottom, int positionY);
-	void moveDownOnScreen();
+	inline void moveDownOnScreen() {
+		Block::positionXBottom_++;
+	}
 	int getPositionXBottom() const;
 	int getPositionLeftY() const;
-	static const int size = 3;
 
 private:
 	int positionLeftY_;

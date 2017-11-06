@@ -12,7 +12,6 @@ namespace CarRacingNamespace {
 	public:
 		static const int speedMax = 5;
 		static const int speedMin = 1;
-		static const int speedTraffic = 3;
 
 		static const int nRows = 20;
 		static const int nColumns = 20;

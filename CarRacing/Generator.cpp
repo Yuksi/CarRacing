@@ -10,16 +10,18 @@ Generator::Generator()
 {
 }
 
+int Generator::generatePositionLeftY(int activeSize) {
+	return (1 + rand() % (CarRacingNamespace::Constants::nColumns - 1 - activeSize - 1));
+}
+
 Block Generator::generateBlock() {
-	int blockLeftPoint = 1 + rand() % 
-		(CarRacingNamespace::Constants::nColumns - 1 - CarRacingNamespace::Constants::blockSize - 1);
+	int blockLeftPoint = generatePositionLeftY(CarRacingNamespace::Constants::blockSize);
 	Block block = Block(0, blockLeftPoint);
 	return block;
 }
 
 Traffic Generator::generateTraffic() {
-	int carLeftPoint = 1 + rand() %
-		(CarRacingNamespace::Constants::nColumns - 1 - CarRacingNamespace::Constants::carSizeY - 1);
+	int carLeftPoint = generatePositionLeftY(CarRacingNamespace::Constants::carSizeY);
 	Traffic traffic = Traffic(0, carLeftPoint);
 	return traffic;
 }

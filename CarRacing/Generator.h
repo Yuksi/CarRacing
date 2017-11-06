@@ -11,6 +11,9 @@ public:
 	Generator();
 	Block generateBlock();
 	Traffic generateTraffic();
+
+private:
+	int generatePositionLeftY(int activeSize);
 };
 
 #endif GENERATOR_H

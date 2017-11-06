@@ -2,7 +2,6 @@
 #define GAME_THREADS_H
 
 #include "Car.h"
-#include "Printer.h"
 #include "Generator.h"
 #include "Constants.h"
 #include "Screen.h"
@@ -11,13 +10,12 @@ class GameThreads
 {
 public:
 	GameThreads();
-	bool isCrachedByBlock(Block &block);
-	bool isCrachedByTraffic(Traffic &traffic);
-	void pause();
 	void startGameThread();
 
 private:
 	void increaseLevel();
+	bool isCrachedByActive(Active &active);
+	void pause();
 	void control();
 
 	bool isPaused_ = false;

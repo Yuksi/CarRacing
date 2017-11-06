@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "Car.h"
-#include "Block.h"
 #include "Constants.h"
 #include "Generator.h"
 #include "Printer.h"
@@ -27,17 +26,9 @@ void GameThreads::increaseLevel() {
 	}
 }
 
-bool GameThreads::isCrachedByBlock(Block &block) {
-	if ((block.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || block.getPositionLeftY() + Constants::blockSize <= car_.getPositionLeftY())
-		|| block.getPositionBottomX() < Constants::nRows - Constants::carSizeX) {
-		return false;
-	}
-	return true;
-}
-
-bool GameThreads::isCrachedByTraffic(Traffic &traffic) {
-	if ((traffic.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || traffic.getPositionLeftY() + Constants::carSizeY <= car_.getPositionLeftY())
-		|| traffic.getPositionBottomX() <= car_.getPositionBottomX() - Constants::carSizeX) {
+bool GameThreads::isCrachedByActive(Active &active) {
+	if ((active.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || active.getPositionLeftY() + Constants::blockSize <= car_.getPositionLeftY())
+		|| active.getPositionBottomX() <= car_.getPositionBottomX() - Constants::carSizeX) {
 		return false;
 	}
 	return true;
@@ -97,7 +88,7 @@ void GameThreads::startGameThread() {
 
 	int timeWaitIndex = 1;
 	
-	while (!isCrachedByBlock(block) && !isCrachedByTraffic(traffic)) {
+	while (!isCrachedByActive(block) && !isCrachedByActive(traffic)) {
 
 		if (block.getPositionBottomX() == Constants::nRows + Constants::blockSize) {
 			block = generator_.generateBlock();

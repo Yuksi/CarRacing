@@ -11,9 +11,9 @@ class GameThreads
 {
 public:
 	GameThreads();
-	void blockDisplayThread();
+	bool isGameOver(Block &block);
+	void pause();
 	void startGameThread();
-	bool isGameOver;
 	void displayTrafficThread();
 
 private:

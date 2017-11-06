@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <thread>
+#include <iostream>
 
 #include "Car.h"
 #include "Block.h"
@@ -12,18 +13,6 @@
 #include "Screen.h"
 
 using namespace CarRacingNamespace;
-
-bool isPaused_ = false;
-
-int speed_ = CarRacingNamespace::Constants::speedMin;
-int distance_ = 0;
-
-int level_ = 0;
-
-Car car_;
-
-Generator generator_;
-Screen screen_;
 
 GameThreads::GameThreads() {
 	screen_.printScreen();
@@ -38,7 +27,7 @@ void GameThreads::increaseLevel() {
 	}
 }
 
-bool GameThreads::isGameOver(Block &block) {
+bool GameThreads::isCrachedByBlock(Block &block) {
 	if ((block.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || block.getPositionLeftY() + Constants::blockSize <= car_.getPositionLeftY())
 		|| block.getPositionBottomX() < Constants::nRows - Constants::carSizeX) {
 		return false;
@@ -46,28 +35,12 @@ bool GameThreads::isGameOver(Block &block) {
 	return true;
 }
 
-void GameThreads::displayTrafficThread() {
-	Traffic traffic = generator_.generateTraffic();
-	while ((traffic.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || traffic.getPositionLeftY() + Constants::carSizeY <= car_.getPositionLeftY())
+bool GameThreads::isCrachedByTraffic(Traffic &traffic) {
+	if ((traffic.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || traffic.getPositionLeftY() + Constants::carSizeY <= car_.getPositionLeftY())
 		|| traffic.getPositionBottomX() <= car_.getPositionBottomX() - Constants::carSizeX) {
-
-		if (traffic.getPositionBottomX() == Constants::nRows + Constants::carSizeX) {
-			traffic = generator_.generateTraffic(); 
-		}
-		Printer printer(&traffic);
-		printer.print();
-		if (traffic.getSpeed() < 0) {
-			std::this_thread::sleep_for(std::chrono::milliseconds((Constants::maximumTimePause * 2) / speed_));
-		}
-		else std::this_thread::sleep_for(std::chrono::milliseconds(Constants::maximumTimePause / 2 * speed_));
-		traffic.moveDown();
-		if (isPaused_) {
-			pause();
-		}
+		return false;
 	}
-
-	screen_.printGameOver();
-	//isGameOver = true;
+	return true;
 }
 
 void GameThreads::pause() {
@@ -79,60 +52,82 @@ void GameThreads::pause() {
 	}
 }
 
+void GameThreads::control() {
+	if (GetAsyncKeyState(VK_LEFT)) {
+		if (car_.getPositionLeftY() >= Constants::carSizeY + 1) {
+			int oldCarPositionY = car_.getPositionLeftY();
+			car_.moveLeft();
+		}
+	}
+	if (GetAsyncKeyState(VK_RIGHT)) {
+		if (car_.getPositionLeftY() < Constants::nColumns - Constants::carSizeY - 1) {
+			int oldCarPositionLeftY = car_.getPositionLeftY();
+			car_.moveRight();
+		}
+	}
+	if (GetAsyncKeyState(VK_UP)) {
+		if (speed_ < Constants::speedMax + level_) {
+			speed_++;
+			screen_.rePrintSpeed(speed_);
+		}
+	}
+	if (GetAsyncKeyState(VK_DOWN)) {
+		if (speed_ > Constants::speedMin + level_) {
+			speed_--;
+			screen_.rePrintSpeed(speed_);
+		}
+	}
+	if (GetAsyncKeyState(VK_RETURN)) {
+		pause();
+	}
+	if (GetAsyncKeyState(VK_ESCAPE)) {
+		exit(0);
+	}
+}
+
 void GameThreads::startGameThread() {
 	
 	Printer printerCar(&car_);
 
 	Block block = generator_.generateBlock();
+	Printer printerBlock(&block);
+
+	Traffic traffic = generator_.generateTraffic();
+	Printer printerTraffic(&traffic);
+
+	int timeWaitIndex = 1;
 	
-	while (!isGameOver(block)) {
+	while (!isCrachedByBlock(block) && !isCrachedByTraffic(traffic)) {
 
 		if (block.getPositionBottomX() == Constants::nRows + Constants::blockSize) {
 			block = generator_.generateBlock();
 		}
-		Printer printer(&block);
-		printer.print();
-		Sleep(Constants::maximumTimePause / speed_);
-		block.moveDownOnScreen();
+		if (traffic.getPositionBottomX() == Constants::nRows + Constants::carSizeX) {
+			traffic = generator_.generateTraffic();
+		}
+		printerBlock.print();
+		printerTraffic.print();
+		printerCar.print();
+
+		Sleep(Constants::maximumTimePause / (2 * speed_));
+		traffic.moveDown();
+		
+		if (timeWaitIndex % 2 == 0) {
+			Sleep(Constants::maximumTimePause / speed_);
+			block.moveDownOnScreen();
+		}
+	
 		distance_++;
 		screen_.rePrintDistance(distance_);
 		increaseLevel();
-
-		printerCar.print();
 		
-		if (GetAsyncKeyState(VK_LEFT)) {
-			if (car_.getPositionLeftY() >= Constants::carSizeY + 1) {
-				int oldCarPositionY = car_.getPositionLeftY();
-				car_.moveLeft();
-				printer.print();
-			}
-		}
-		if (GetAsyncKeyState(VK_RIGHT)) {
-			if (car_.getPositionLeftY() < Constants::nColumns - Constants::carSizeY - 1) {
-				int oldCarPositionLeftY = car_.getPositionLeftY();
-				car_.moveRight();
-				printer.print();
-			}
-		}
-		if (GetAsyncKeyState(VK_UP)) {
-			if (speed_ < Constants::speedMax + level_) {
-				speed_++;
-				screen_.rePrintSpeed(speed_);
-			}
-		}
-		if (GetAsyncKeyState(VK_DOWN)) {
-			if (speed_ > Constants::speedMin + level_) {
-				speed_--;
-				screen_.rePrintSpeed(speed_);
-			}
-		}
-		if (GetAsyncKeyState(VK_RETURN)) {
+		if (isPaused_) {
 			pause();
 		}
-		if (GetAsyncKeyState(VK_ESCAPE)) {
-			exit(0);
-		}
+		
+		control();
+		printerCar.print();
+		timeWaitIndex++;
 	}
 	screen_.printGameOver();
-	//isGameOver = true;
 }

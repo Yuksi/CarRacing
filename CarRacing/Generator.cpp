@@ -21,12 +21,6 @@ Traffic Generator::generateTraffic() {
 	int carLeftPoint = 1 + rand() %
 		(CarRacingNamespace::Constants::nColumns - 1 - CarRacingNamespace::Constants::carSizeY - 1);
 	Traffic traffic = Traffic(0, carLeftPoint);
-	if (traffic.getPositionLeftY() + CarRacingNamespace::Constants::carSizeY >= CarRacingNamespace::Constants::nColumns / 2) {
-		traffic.setSpeed(-CarRacingNamespace::Constants::speedTraffic);
-	}
-	else {
-		traffic.setSpeed(CarRacingNamespace::Constants::speedTraffic);
-	}
 	return traffic;
 }
 

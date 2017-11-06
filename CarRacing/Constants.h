@@ -29,7 +29,7 @@ namespace CarRacingNamespace {
 		static const int carSizeY = 3;
 
 		static const int distanceToLevelUp = 100;
-		static const int maximumTimePause = 200;
+		static const int maximumTimePause = 100;
 	};
 }
 

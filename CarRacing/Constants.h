@@ -22,6 +22,10 @@ namespace CarRacingNamespace {
 		static const char spaceSymbol = ' ';
 		static const char trafficSymbol = '0';
 
+		static const char menuSymbol = 177;
+		static const int menuSizeX = 12;
+		static const int menuSizeY = 50;
+
 		static const int blockSize = 3;
 
 		static const int carSizeX = 4;
@@ -29,6 +33,8 @@ namespace CarRacingNamespace {
 
 		static const int distanceToLevelUp = 100;
 		static const int maximumTimePause = 100;
+
+		static const int waitIndex = 2;
 	};
 }
 

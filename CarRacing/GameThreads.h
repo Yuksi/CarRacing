@@ -1,9 +1,10 @@
 #ifndef GAME_THREADS_H
 #define GAME_THREADS_H
 
-#include "Car.h"
-#include "Generator.h"
 #include "Constants.h"
+#include "Car.h"
+#include "Enemy.h"
+#include "Generator.h"
 #include "Screen.h"
 
 class GameThreads
@@ -14,9 +15,11 @@ public:
 
 private:
 	void increaseLevel();
-	bool isCrachedByActive(Active &active);
+	bool isCrachedByEnemy(Enemy &block, Enemy &traffic);
 	void pause();
 	void control();
+	void autoMovements(Enemy &block, Enemy &traffic, int timeWaitIndex);
+	void chooseContinueOrQuit();
 
 	bool isPaused_ = false;
 	int speed_ = CarRacingNamespace::Constants::speedMin;

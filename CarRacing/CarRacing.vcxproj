@@ -144,10 +144,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Active.h" />
+    <ClInclude Include="Enemies.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="CarRacing.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameThreads.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="Printer.h" />
@@ -161,6 +163,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="CarRacing.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameThreads.cpp" />
     <ClCompile Include="Generator.cpp" />
     <ClCompile Include="Printer.cpp" />

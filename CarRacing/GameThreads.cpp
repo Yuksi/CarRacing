@@ -4,17 +4,15 @@
 #include <windows.h>
 #include <thread>
 #include <iostream>
+#include <time.h>
 
-#include "Car.h"
-#include "Constants.h"
-#include "Generator.h"
+#include "Traffic.h"
+#include "Block.h"
 #include "Printer.h"
-#include "Screen.h"
 
 using namespace CarRacingNamespace;
 
 GameThreads::GameThreads() {
-	screen_.printScreen();
 }
 
 void GameThreads::increaseLevel() {
@@ -26,12 +24,21 @@ void GameThreads::increaseLevel() {
 	}
 }
 
-bool GameThreads::isCrachedByActive(Active &active) {
-	if ((active.getPositionLeftY() >= car_.getPositionLeftY() + Constants::carSizeY || active.getPositionLeftY() + Constants::blockSize <= car_.getPositionLeftY())
-		|| active.getPositionBottomX() <= car_.getPositionBottomX() - Constants::carSizeX) {
-		return false;
+bool GameThreads::isCrachedByEnemy(Enemy &block, Enemy &traffic) {
+	Enemy enemies[2] = { block, traffic };
+	bool isCrached = false;
+	for (int i = 0; i < 2; i++) {
+		if ((enemies[i].getPositionLeftY() >= car_.getPositionLeftY() + car_.getSizeY() 
+			|| enemies[i].getPositionLeftY() + enemies[i].getSizeY() <= car_.getPositionLeftY())
+			|| enemies[i].getPositionBottomX() <= car_.getPositionBottomX() - car_.getSizeX()) {
+			isCrached = false;
+		}
+		else {
+			isCrached = true;
+			break;
+		}
 	}
-	return true;
+	return isCrached;
 }
 
 void GameThreads::pause() {
@@ -45,13 +52,13 @@ void GameThreads::pause() {
 
 void GameThreads::control() {
 	if (GetAsyncKeyState(VK_LEFT)) {
-		if (car_.getPositionLeftY() >= Constants::carSizeY + 1) {
+		if (car_.getPositionLeftY() >= car_.getSizeY() + 1) {
 			int oldCarPositionY = car_.getPositionLeftY();
 			car_.moveLeft();
 		}
 	}
 	if (GetAsyncKeyState(VK_RIGHT)) {
-		if (car_.getPositionLeftY() < Constants::nColumns - Constants::carSizeY - 1) {
+		if (car_.getPositionLeftY() < Constants::nColumns - car_.getSizeY() - 1) {
 			int oldCarPositionLeftY = car_.getPositionLeftY();
 			car_.moveRight();
 		}
@@ -76,49 +83,81 @@ void GameThreads::control() {
 	}
 }
 
-void GameThreads::startGameThread() {
-	
-	Printer printerCar(&car_);
-
-	Block block = generator_.generateBlock();
-	Printer printerBlock(&block);
-
-	Traffic traffic = generator_.generateTraffic();
-	Printer printerTraffic(&traffic);
-
-	int timeWaitIndex = 1;
-	
-	while (!isCrachedByActive(block) && !isCrachedByActive(traffic)) {
-
-		if (block.getPositionBottomX() == Constants::nRows + Constants::blockSize) {
-			block = generator_.generateBlock();
-		}
-		if (traffic.getPositionBottomX() == Constants::nRows + Constants::carSizeX) {
-			traffic = generator_.generateTraffic();
-		}
-		printerBlock.print();
-		printerTraffic.print();
-		printerCar.print();
-
-		Sleep(Constants::maximumTimePause / (2 * speed_));
+void GameThreads::autoMovements(Enemy &block, Enemy &traffic, int timeWaitIndex) {
+	Sleep(Constants::maximumTimePause / speed_);
+	if (!traffic.isNoMatterOfPosition() && !traffic.isRightPosition()) {
 		traffic.moveDown();
-		
-		if (timeWaitIndex % 2 == 0) {
-			Sleep(Constants::maximumTimePause / speed_);
-			block.moveDownOnScreen();
-		}
-	
+	}
+	else if (!traffic.isNoMatterOfPosition() && timeWaitIndex % (Constants::waitIndex * Constants::waitIndex) == 0) {
+		traffic.moveDown();
+	}
+	if (block.isNoMatterOfPosition() && timeWaitIndex % Constants::waitIndex == 0) {
+		block.moveDown();
 		distance_++;
 		screen_.rePrintDistance(distance_);
-		increaseLevel();
+	}
+}
+
+void GameThreads::chooseContinueOrQuit() {
+	while (!GetAsyncKeyState(VK_ESCAPE)) {
+		if (GetAsyncKeyState(VK_RETURN)) {
+			level_ = 0;
+			speed_ = 1;
+			distance_ = 1;
+			startGameThread();
+		}
+		if (GetAsyncKeyState(VK_ESCAPE)) {
+			exit(0);
+		}
+	}
+}
+
+void GameThreads::startGameThread() {
+	time_t start, finish;
+	double timeGame;
+	Enemy* block = generator_.generateEnemy(BLOCK);
+	Enemy* traffic = generator_.generateEnemy(TRAFFIC);
+
+	Printer printers[3] = { Printer(&car_), Printer(block), Printer(traffic) };
+
+	int timeWaitIndex = 1;
+
+	screen_.printStartInfo();
+	getchar();
+	system("cls");
+	screen_.printScreen();
+	time(&start);
+
+	while (!isCrachedByEnemy(*block, *traffic)) {
+
+		if (block->getPositionBottomX() == Constants::nRows + block->getSizeX()) {
+			delete block;
+			block = generator_.generateEnemy(BLOCK);
+		}
+		if (traffic->getPositionBottomX() == Constants::nRows + car_.getSizeX()) {
+			delete traffic;
+			traffic = generator_.generateEnemy(TRAFFIC);
+		}
+		
+		for (int i = 0; i < 3; i++) {
+			printers[i].print();
+		}
+
+		autoMovements(*block, *traffic, timeWaitIndex);
+		if (distance_ > 0) {
+			increaseLevel();
+		}
 		
 		if (isPaused_) {
 			pause();
 		}
 		
 		control();
-		printerCar.print();
 		timeWaitIndex++;
 	}
-	screen_.printGameOver();
+	time(&finish);
+	timeGame = difftime(finish, start);
+	screen_.printGameOverInfo(speed_, distance_, level_, timeGame);
+	
+	chooseContinueOrQuit();
 }

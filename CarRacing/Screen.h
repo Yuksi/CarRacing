@@ -9,9 +9,11 @@ public:
 	void rePrintSpeed(const int speed);
 	void rePrintDistance(const int distance);
 	void rePrintLevel(const int level);
-	void printGameOver();
+	void printStartInfo();
+	void printGameOverInfo(int speed, int distance, int level, double timeGame);
 private:
 	void Screen::putConsoleCursorToXY(const int x, const int y);
+	void printMenu();
 };
 
 #endif SCREEN_H

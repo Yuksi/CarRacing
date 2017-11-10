@@ -2,7 +2,6 @@
 #define CAR_H
 
 #include "Active.h"
-#include "Constants.h"
 
 class Car : public Active {
 
@@ -18,11 +17,11 @@ private:
 
 inline void Car::moveLeft() {
 	oldPositionLeftY_ = positionLeftY_;
-	positionLeftY_ -= CarRacingNamespace::Constants::carSizeY;
+	positionLeftY_ -= sizeY_;
 }
 inline void Car::moveRight() {
 	oldPositionLeftY_ = positionLeftY_;
-	positionLeftY_ += CarRacingNamespace::Constants::carSizeY;
+	positionLeftY_ += sizeY_;
 }
 
 #endif CAR_H

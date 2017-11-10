@@ -50,6 +50,43 @@ void Screen::rePrintLevel(const int level) {
 	std::cout << level;
 }
 
-void Screen::printGameOver() {
-	std::cout << "GAME OVER" << std::endl;
+void Screen::printMenu() {
+	putConsoleCursorToXY(Constants::nColumns, Constants::nRows / 2);
+	for (int i = 0; i <= Constants::menuSizeX; i++) {
+		for (int k = 0; k <= Constants::menuSizeY; k++) {
+			if (i == 0 || i == Constants::menuSizeX || k == 0) {
+				std::cout << Constants::menuSymbol;
+			}
+			if (k == Constants::menuSizeY) {
+				putConsoleCursorToXY(Constants::nColumns + k, Constants::nRows / 2 + i);
+				std::cout << Constants::menuSymbol;
+			}
+		}
+		putConsoleCursorToXY(Constants::nColumns, Constants::nRows / 2 + i);
+	}
+}
+
+void Screen::printStartInfo() {
+	printMenu();
+	putConsoleCursorToXY(Constants::nColumns + 2, Constants::nRows / 2 + 2);
+	std::cout << "Print name and press enter to start: ";
+}
+
+void Screen::printGameOverInfo(int speed,int distance, int level, double timeGame) {
+	printMenu();
+	int i = 1;
+	putConsoleCursorToXY(Constants::nColumns + 2, Constants::nRows / 2 + ++i);
+	std::cout << "GAME OVER";
+	++i;
+	putConsoleCursorToXY(Constants::nColumns + 2, Constants::nRows / 2 + ++i);
+	std::cout << speedString << speed;
+	putConsoleCursorToXY(Constants::nColumns + 2, Constants::nRows / 2 + ++i);
+	std::cout << distanceString << distance;
+	putConsoleCursorToXY(Constants::nColumns + 2, Constants::nRows / 2 + ++i);
+	std::cout << levelString << level;
+	putConsoleCursorToXY(Constants::nColumns + 2, Constants::nRows / 2 + ++i);
+	std::cout << "Time of game = " << timeGame << " sec";
+	++i;
+	putConsoleCursorToXY(Constants::nColumns + 2, Constants::nRows / 2 + ++i);
+	std::cout << "Press Enter to restart game and Esc to quit";
 }

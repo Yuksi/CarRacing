@@ -1,18 +1,27 @@
 #ifndef TRAFFIC_H
 #define TRAFFIC_H
 
-#include "Car.h"
-class Traffic : public Active
+#include "Enemy.h"
+#include "Constants.h"
+
+class Traffic : public Enemy
 {
 public:
 	Traffic(int positionBottomX, int positionY);
-	inline void moveDown();
+	virtual ~Traffic();
 	void print();
 
+private:
+	inline void findAndSetRightPosition();
 };
 
-inline void Traffic::moveDown() {
-	positionBottomX_++;
+inline void Traffic::findAndSetRightPosition() {
+	if (positionLeftY_ >= CarRacingNamespace::Constants::nColumns / 2) {
+		isRightPosition_ = true;
+	}
+	else {
+		isRightPosition_ = false;
+	}
 }
 
 #endif TRAFFIC_H

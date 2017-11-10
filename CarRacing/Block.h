@@ -1,18 +1,14 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "Active.h"
+#include "Enemy.h"
 
-class Block : public Active {
+class Block : public Enemy {
 
 public:
 	Block(int positionBottomX, int positionLeftY);
-	inline void moveDownOnScreen();
+	virtual ~Block();
 	void print();
 };
-
-inline void Block::moveDownOnScreen() {
-	positionBottomX_++;
-}
 
 #endif BLOCK_H
